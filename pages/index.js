@@ -13,6 +13,7 @@ export default function Home() {
           Read{" "}
           <Link href="/posts/first-post">
             <a>this page!</a>
+            {/* <a>this page!</a>  we use the a so we can style the element and the Link componeto to use client side rendering (csr) */}
           </Link>
         </h1>
 
