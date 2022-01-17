@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { remark } from "remark";
+import html from "remark-html";
 
 const postsDirectory = path.join(process.cwd(), "posts");
 
@@ -52,30 +54,49 @@ export function getAllPostIds() {
   //     }
   //   }
   // ]
-  return fileNames.map((fileName) => {
-    return {
-      params: {
-        id: fileName.replace(/\.md$/, ""),
-      },
-    };
-  });
+  return fileNames
+    .map((fileName) => {
+      return {
+        params: {
+          id: fileName.replace(/\.md$/, ""),
+        },
+      };
+    })
+    .concat({ params: { id: "about" } });
 }
 
-export function getPostData(id) {
+export /* async */ function getPostData(id) {
   const fullPath = path.join(postsDirectory, `${id}.md`);
   // Read markdown file as string
   const fileContents = fs.readFileSync(fullPath, "utf8");
 
   // Use gray-matter to parse the post metadata section
   const matterResult = matter(fileContents);
-
+  /*
+  this is what matterResult looks like:
+   {
+    content: '\n' +
+      'We recommend using **Static Generation** (with and without data) whenever possible ....
+    data: {
+      title: 'When to Use Static Generation v.s. Server-side Rendering',
+      date: '2020-01-02'
+    },
+    isEmpty: false,
+    excerpt: '',
+    orig: <Buffer 2d 2d 2d 0a 74 69 74 6c 65 3a 20 22 57 68 65 6e 20 74 6f 20 55 73 65 20 53 74 61 74 69 63 20 47 65 6e 65 72 61 74 69 6f 6e 20 76 2e 73 2e 20 53 65 72 ... 987 more bytes> 
+    */
+  // console.log(matterResult);
   // // Use remark to convert markdown into HTML string
-  // const processedContent = matterResult.content;
-
+  const markdownContent = matterResult.content; // this is the markdown content
+  const processedContent = /* await */ remark()
+    .use(html)
+    .processSync(markdownContent); // we need to use remark to convert markdown to html
+  const contentHtml = processedContent.toString(); // this is the html content
   // Combine the data with the id
   return {
     id,
     // content: processedContent,
     ...matterResult.data,
+    contentHtml,
   };
 }
