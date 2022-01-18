@@ -58,11 +58,11 @@ export function getAllPostIds() {
     .map((fileName) => {
       return {
         params: {
-          id: fileName.replace(/\.md$/, ""),
+          id: [fileName.replace(/\.md$/, "")],
         },
       };
     })
-    .concat({ params: { id: "about" } });
+    .concat({ params: { id: ["about", "1"] } });
 }
 
 export /* async */ function getPostData(id) {

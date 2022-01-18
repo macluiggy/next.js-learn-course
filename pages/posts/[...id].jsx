@@ -4,15 +4,31 @@ import Head from "next/head";
 import Date from "../../components/date";
 // Add this import at the top of the file
 import utilStyles from "../../styles/utils.module.css";
+import { useState, useEffect } from "react";
+export default function Post({
+  postData: { title, date, id, contentHtml },
+  /*text, */
+}) {
+  // const [text, setText] = useState("");
+  // const fetchText = async () => {
+  //   const response = await fetch("https://localhost:3000/api/hello");
+  //   const data = await response.json();
+  //   console.log(data);
 
-export default function Post({ postData: { title, date, id, contentHtml } }) {
+  //   setText(data.text);
+  // };
+  // useEffect(() => {
+  //   fetchText();
+  // });
   return (
     <Layout>
       <Head>
         <title>{title}</title>
       </Head>
       <article>
-        <h1 className={utilStyles.headingX1}>{title}</h1>
+        <h1 className={utilStyles.headingX1}>
+          {title} {/*{text} */}
+        </h1>
         <div className={utilStyles.lightText}>
           <Date dateString={date} />
         </div>
@@ -43,9 +59,9 @@ export async function getStaticPaths() {
   };
 }
 
-export /* async */ function getStaticProps({ params }) {
+export async function getStaticProps({ params }) {
   let postData;
-  if (params.id === "about") {
+  if (params.id[0] === "about") {
     postData = {
       id: params.id,
       title: "About",
@@ -54,9 +70,13 @@ export /* async */ function getStaticProps({ params }) {
   } else {
     postData = /* await */ getPostData(params.id);
   }
+  // const response = await fetch("http://localhost:3000/api/hello");
+  // const data = await response.json();
+  // console.log(data);
   return {
     props: {
       postData,
+      // ...data,
     },
   };
 }
