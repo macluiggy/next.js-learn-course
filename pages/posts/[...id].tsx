@@ -5,6 +5,7 @@ import Date from "../../components/date";
 // Add this import at the top of the file
 import utilStyles from "../../styles/utils.module.css";
 import { useState, useEffect } from "react";
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 export default function Post({
   postData: { title, date, id, contentHtml },
   /*text, */
@@ -21,7 +22,7 @@ export default function Post({
   //   fetchText();
   // });
   return (
-    <Layout>
+    <Layout home={false}>
       <Head>
         <title>{title}</title>
       </Head>
@@ -38,7 +39,7 @@ export default function Post({
   );
 }
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   /*
   getStaticPaths() is a special function that allows you to define the paths, this paths will be used to generate the pages.
   the function returns an object that looks like this:
@@ -57,9 +58,9 @@ export async function getStaticPaths() {
     paths,
     fallback: false,
   };
-}
+};
 
-export async function getStaticProps({ params }) {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   let postData;
   if (params.id[0] === "about") {
     postData = {
@@ -79,4 +80,4 @@ export async function getStaticProps({ params }) {
       // ...data,
     },
   };
-}
+};
